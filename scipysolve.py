@@ -2,9 +2,8 @@ from eval_expressions import produce_scipy_input
 from scipy.optimize import linprog
 from constants import *
 
-d = produce_scipy_input()
-
 def solve():
+    d = produce_scipy_input()
     solution = {}
     res = linprog(d[TARGET_FUNCTION_COEFFICIENTS_KEY],
               A_ub=d[COEFFICIENTS_INEQUALITIES_KEY],

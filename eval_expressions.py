@@ -93,6 +93,9 @@ def process_expression(expression, cof, dict_):
     expression = expression.replace('-','+-1*')
     terms = expression.split('+')
     for term in terms:
+        term = term.strip()
+        if term == '':
+            continue
         variable_count = 0
         faced_value_error = False
         factors = term.split('*')
