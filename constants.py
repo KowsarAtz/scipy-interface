@@ -27,7 +27,7 @@ CONSTANTS_INEQUALITIES_KEY = 'constants_inequalities'
 COEFFICIENTS_EQUALITIES_KEY = 'coefficients_equalities'
 CONSTANTS_EQUALITIES_KEY = 'constants_equalities'
 
-SOLUTION_KEY_SUCESS_STATUS = 'sucess_status'
+SOLUTION_KEY_SUCESS_STATUS = 'success_status'
 SOLUTION_KEY_VARIABLE_VALUES = 'variable_values'
 SOLUTION_KEY_MAX_VALUE = 'max_value'
 SOLUTION_KEY_MIN_VALUE = 'min_value'
