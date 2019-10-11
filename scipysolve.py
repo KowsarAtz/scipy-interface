@@ -4,13 +4,6 @@ from constants import *
 
 d = produce_scipy_input()
 
-target_function_type = d[TARGET_FUNCTION_TYPE_KEY]
-coefficients_inequalities = d[COEFFICIENTS_INEQUALITIES_KEY]
-constants_inequalities = d[CONSTANTS_INEQUALITIES_KEY]
-coefficients_equalities = d[COEFFICIENTS_EQUALITIES_KEY]
-constants_equalities = d[CONSTANTS_EQUALITIES_KEY]
-
-
 def solve():
     solution = {}
     res = linprog(d[TARGET_FUNCTION_COEFFICIENTS_KEY],
