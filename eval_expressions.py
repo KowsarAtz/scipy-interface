@@ -57,16 +57,22 @@ def process_dicts():
         except KeyError:
             temp_val = 0
         target_function_coefficients += [temp_val]
-    target_function_constant = target_function_dict[CONSTANT_VALUE]
+    temp_val = 0
+    try:
+        temp_val = target_function_dict[CONSTANT_VALUE]
+    except KeyError:
+        temp_val = 0
+    target_function_constant = temp_val
+    f = (lambda x: None if x == [] else x)
     return {
-        VARIABLES_KEY: variables,
+        VARIABLES_KEY: f(variables),
         TARGET_FUNCTION_TYPE_KEY: min_or_max_problem,
-        TARGET_FUNCTION_COEFFICIENTS_KEY: target_function_coefficients,
+        TARGET_FUNCTION_COEFFICIENTS_KEY: f(target_function_coefficients),
         TARGET_FUNCTION_CONSTANT_KEY: target_function_constant,
-        COEFFICIENTS_INEQUALITIES_KEY: coefficients_inequalities, 
-        CONSTANTS_INEQUALITIES_KEY: constants_inequalities,
-        COEFFICIENTS_EQUALITIES_KEY: coefficients_equalities,
-        CONSTANTS_EQUALITIES_KEY: constants_equalities
+        COEFFICIENTS_INEQUALITIES_KEY: f(coefficients_inequalities), 
+        CONSTANTS_INEQUALITIES_KEY: f(constants_inequalities),
+        COEFFICIENTS_EQUALITIES_KEY: f(coefficients_equalities),
+        CONSTANTS_EQUALITIES_KEY: f(constants_equalities)
     }
 
 def add_variable(var):
