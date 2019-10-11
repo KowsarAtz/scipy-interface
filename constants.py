@@ -1,0 +1,35 @@
+INPUT_FILE = "input_equations.txt"
+OUTPUT_FILE = "or_result.txt"
+
+RIGHT_HAND_SIDE = 'right_side'
+CONSTANT_VALUE = 'constant_value'
+
+MIN_SIGN = 'MIN'
+MAX_SIGN = 'MAX'
+MIN = 1
+MAX = -1
+EQUAL_SIGN = '='
+GREATER_THAN_SIGN = '>='
+LOWER_THAN_SIGN = '<='
+GREATER_THAN = -1
+LOWER_THAN = 1
+
+LINEAR_EXPRESSION_SYNTAX_ERROR = 1
+TARGET_FUNCTION_CONSTANT_VALUE_ERROR = 2
+MORE_THAN_ONE_TARGET_FUNCTION = 3
+
+VARIABLES_KEY = 'variables'
+TARGET_FUNCTION_COEFFICIENTS_KEY = 'target_function_coefficients'
+TARGET_FUNCTION_CONSTANT_KEY = 'target_function_constant'
+TARGET_FUNCTION_TYPE_KEY = 'target_function_type'
+COEFFICIENTS_INEQUALITIES_KEY = 'coefficients_inequalities'
+CONSTANTS_INEQUALITIES_KEY = 'constants_inequalities'
+COEFFICIENTS_EQUALITIES_KEY = 'coefficients_equalities'
+CONSTANTS_EQUALITIES_KEY = 'constants_equalities'
+
+SOLUTION_KEY_SUCESS_STATUS = 'sucess_status'
+SOLUTION_KEY_VARIABLE_VALUES = 'variable_values'
+SOLUTION_KEY_MAX_VALUE = 'max_value'
+SOLUTION_KEY_MIN_VALUE = 'min_value'
+
+ROUND_CONST = 2
