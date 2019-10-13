@@ -5,6 +5,9 @@ inequality_dicts = []
 equality_dicts = []
 target_function_dict = {}
 min_or_max_problem = None
+minus_one = {
+    CONSTANT_VALUE: -1
+}
 
 def print_dicts():
     global inequality_dicts, equality_dicts, target_function_dict
@@ -16,7 +19,8 @@ def print_dicts():
         print(d)
     print("TARGET:")
     print(target_function_dict)
-    
+
+
 def process_dicts():
     global variables, inequality_dicts, equality_dicts, target_function_dict, min_or_max_problem
     coefficients_inequalities = []
@@ -69,16 +73,18 @@ def process_dicts():
         TARGET_FUNCTION_TYPE_KEY: min_or_max_problem,
         TARGET_FUNCTION_COEFFICIENTS_KEY: f(target_function_coefficients),
         TARGET_FUNCTION_CONSTANT_KEY: target_function_constant,
-        COEFFICIENTS_INEQUALITIES_KEY: f(coefficients_inequalities), 
+        COEFFICIENTS_INEQUALITIES_KEY: f(coefficients_inequalities),
         CONSTANTS_INEQUALITIES_KEY: f(constants_inequalities),
         COEFFICIENTS_EQUALITIES_KEY: f(coefficients_equalities),
         CONSTANTS_EQUALITIES_KEY: f(constants_equalities)
     }
 
+
 def add_variable(var):
     global variables
     if var not in variables:
         variables += [var]
+
 
 def merge_dicts(dict1, dict2):
     dict3 = dict1.copy()
@@ -89,72 +95,156 @@ def merge_dicts(dict1, dict2):
             dict3[key] = dict2[key]
     return dict3
 
-def process_expression(expression, cof, dict_):
-    expression = expression.replace('-','+-1*')
-    terms = expression.split('+')
-    for term in terms:
-        term = term.strip()
-        if term == '':
-            continue
-        variable_count = 0
-        faced_value_error = False
-        factors = term.split('*')
-        key = ''
-        temp = 1
-        tempfloat = 0.0
-        for factor in factors:
-            try:
-                tempfloat = float(factor)
-                temp *= tempfloat
-            except ValueError:
-                variable_count += 1
-                if variable_count > 1:
-                    return LINEAR_EXPRESSION_SYNTAX_ERROR
-                faced_value_error = True
-                key = "%s" % factor.replace(' ','')
-        if faced_value_error:
-            try:
-                dict_[key] += temp*cof
-            except KeyError:
-                dict_[key] = temp*cof
-                add_variable(key)
-        else:
-            try:
-                dict_[CONSTANT_VALUE] += temp*cof
-            except KeyError:
-                dict_[CONSTANT_VALUE] = temp*cof
-    return dict_
+
+def mult_dicts(dict1, dict2):
+    dict3 = None
+    dict_const = None
+    dict_modify = None
+    if len(dict1.keys()) == 1 and (CONSTANT_VALUE in dict1.keys()):
+        dict_const = dict1
+        dict_modify = dict2
+    elif len(dict2.keys()) == 1 and (CONSTANT_VALUE in dict2.keys()):
+        dict_modify = dict1
+        dict_const = dict2
+    else:
+        # RAISE ERROR (NON-LINEAR)
+        return
+    dict3 = dict_modify.copy()
+    for key in dict3.keys():
+        dict3[key] *= dict_const[CONSTANT_VALUE]
+    return dict3
+
+def p_closed_position(str_, start):
+    i = -1
+    chars = list(str_)
+    if not chars[start] == '(':
+        return NOT_FOUND # RAISE ERROR (INVALID USE OF FUNCTION)
+    temp = 1
+    for i in range(start+1, len(chars)):
+        char = chars[i]
+        if char == '(':
+            temp+=1
+        elif char == ')':
+            temp-=1
+            if temp == 0:
+                return i
+    return NOT_FOUND
+
+def first_free_sign_position(str_, start, sign_):
+    i = -1
+    chars = list(str_)
+    temp = 0
+    for i in range(start, len(chars)):
+        char = chars[i]
+        if char == '(':
+            temp+=1
+        elif char == ')':
+            temp-=1
+        elif char == sign_ and temp == 0:
+            return i
+    return NOT_FOUND
+
+def process_expression(expression):
+    if expression == '':
+        return {}
+
+    if expression.find('(') == 0:
+        i = p_closed_position(expression, 0)
+        p1 = process_expression(expression[1:i])
+        if i == len(expression) - 1:
+            return p1
+        
+        j = first_free_sign_position(expression, i+1, SUM_SIGN)
+        k = first_free_sign_position(expression, i+1, MULT_SIGN)
+        if not j == NOT_FOUND:
+            if j == i+1:
+                return merge_dicts (
+                    p1,
+                    process_expression(expression[i+2:]),
+                )
+            elif k == i+1:
+                temp = mult_dicts (
+                    p1,
+                    process_expression(expression[i+2:j]),
+                )
+                return merge_dicts (
+                    temp,
+                    process_expression(expression[j+1:])
+                )
+        if not k == NOT_FOUND and k == i+1:
+            return mult_dicts (
+                p1,
+                process_expression(expression[i+2:])
+            )
+        return # RAISE ERROR (?)
+
+    break_point = first_free_sign_position(expression, 0, SUM_SIGN)
+    if not break_point == NOT_FOUND:
+        return merge_dicts(
+            process_expression(expression[0:break_point]),
+            process_expression(expression[break_point+1:])
+        )
+
+    break_point = first_free_sign_position(expression, 0, MULT_SIGN)
+    if not break_point == NOT_FOUND:
+        return mult_dicts(
+            process_expression(expression[0:break_point]),
+            process_expression(expression[break_point+1:])
+        )
+    
+    if DIVIS_SIGN in expression:
+        return {
+            CONSTANT_VALUE: eval(expression)
+        }
+
+    temp_val = None
+    try:
+        temp_val = float(expression)
+    except ValueError:
+        add_variable(expression)
+        return {
+            expression: 1
+        }    
+    
+    return {
+        CONSTANT_VALUE: temp_val
+    }
+
+refine_dict = (lambda x,factor: mult_dicts(minus_one, x) if factor == -1 else x)
 
 def process_target_function(expression, type_):
     global target_function_dict
-    factor = type_
-    dict_ = process_expression(expression, factor, {})
-    target_function_dict = dict_
+    target_function_dict = refine_dict(process_expression(expression), type_)
+
 
 def process_inequality(expressions, type_):
     global inequality_dicts
     left_side_factor = type_
     right_side_factor = -1 * type_
     result_dict = merge_dicts(
-        dict1=process_expression(expressions[0], left_side_factor, {}),
-        dict2=process_expression(expressions[1], right_side_factor, {}),
+        dict1=refine_dict(process_expression(expressions[0]), left_side_factor),
+        dict2=refine_dict(process_expression(expressions[1]), right_side_factor)
     )
     inequality_dicts += [result_dict]
     return
+
 
 def process_equality(expressions):
     global equality_dicts
     left_side_factor = 1
     right_side_factor = -1
     result_dict = merge_dicts(
-        dict1=process_expression(expressions[0], left_side_factor, {}),
-        dict2=process_expression(expressions[1], right_side_factor, {}),
+        dict1=refine_dict(process_expression(expressions[0]), left_side_factor),
+        dict2=refine_dict(process_expression(expressions[1]), right_side_factor)
     )
     equality_dicts += [result_dict]
     return
 
+
 def process_line(line):
     global min_or_max_problem
+    line = line.replace('-', '+(-1)*')
+    line = line.replace(' ', '')
     if MIN_SIGN in line:
         if not min_or_max_problem == None:
             return MORE_THAN_ONE_TARGET_FUNCTION
@@ -172,8 +262,9 @@ def process_line(line):
     elif EQUAL_SIGN in line:
         process_equality(line.split(EQUAL_SIGN))
 
-def produce_scipy_input():
-    f = open(INPUT_FILE, "r")
+
+def produce_scipy_input(input_file=INPUT_FILE):
+    f = open(input_file, "r")
     for line in f:
         process_line(line.strip())
     return process_dicts()

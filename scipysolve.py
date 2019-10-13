@@ -2,8 +2,12 @@ from eval_expressions import produce_scipy_input
 from scipy.optimize import linprog
 from constants import *
 
-def solve():
-    d = produce_scipy_input()
+def solve(input_file=None):
+    d = None
+    if input_file == None:
+        d = produce_scipy_input()
+    else:
+        d = produce_scipy_input(input_file)
     solution = {}
     res = linprog(d[TARGET_FUNCTION_COEFFICIENTS_KEY],
               A_ub=d[COEFFICIENTS_INEQUALITIES_KEY],

@@ -1,5 +1,4 @@
-INPUT_FILE = "input_equations.txt"
-OUTPUT_FILE = "or_result.txt"
+INPUT_FILE = "./input_equations.txt"
 
 RIGHT_HAND_SIDE = 'right_side'
 CONSTANT_VALUE = 'constant_value'
@@ -8,6 +7,11 @@ MIN_SIGN = 'MIN'
 MAX_SIGN = 'MAX'
 MIN = 1
 MAX = -1
+NOT_FOUND = -1
+SUM_SIGN = '+'
+MINUS_SIGN = '-'
+MULT_SIGN = '*'
+DIVIS_SIGN = '/'
 EQUAL_SIGN = '='
 GREATER_THAN_SIGN = '>='
 LOWER_THAN_SIGN = '<='
