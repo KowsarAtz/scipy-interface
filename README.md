@@ -4,7 +4,7 @@ Of course you need scipy package and its dependencies installed on your system o
 
 How to use it? Easy! Just follow the below example:
 
-1. Suppose have a file with the path "./in.txt" with your target function specified with MIN or MAX keywords and the rest your problem constraints:
+1. You will define your problem target function with MIN or MAX keywords as well as your problem constraints all in a file with the proper format like the following example:
 ```
 MAX 1000*x_1+1900*x_2+2700*x_3+3400*x_4
 0.18*x_1+0.28*x_2+0.4*x_3+0.5*x_4-0.2125*x_5<=0
@@ -19,7 +19,7 @@ x_3>=0
 x_4>=0
 x_5>=0
 ```
-2. Then you run the "test.py" script with your input-file name as argument for viewing the results:
+2. Then you run the "main.py" script with your input-file path as argument for calculating and viewing the results:
 ```
 $python main.py ./in.txt
 
