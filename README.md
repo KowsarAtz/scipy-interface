@@ -21,7 +21,7 @@ x_5>=0
 ```
 2. Then you run the "test.py" script with your input-file name as argument for viewing the results:
 ```
-$python test.py ./in.txt
+$python main.py ./in.txt
 
 {'max_value': 343965.2,
  'success_status': True,
